@@ -1,13 +1,33 @@
 <template>
   <div ref="anchorRef" :class="cls">
+    <div v-if="hasHeader" :class="ns.e('header')">
+      <div v-if="hasTitle" :class="ns.e('title')">
+        <slot name="title">{{ title }}</slot>
+      </div>
+      <button
+        v-if="collapsibleEnabled"
+        type="button"
+        :class="[ns.e('collapse-btn'), ns.is('collapsed', collapsed)]"
+        @click="toggleCollapse"
+      >
+        <el-icon><arrow-down /></el-icon>
+      </button>
+    </div>
     <div
-      v-if="marker"
-      ref="markerRef"
-      :class="ns.e('marker')"
-      :style="markerStyle"
-    />
-    <div :class="ns.e('list')">
-      <slot />
+      v-show="!collapsed"
+      ref="bodyRef"
+      :class="ns.e('body')"
+      :style="bodyStyle"
+    >
+      <div
+        v-if="marker"
+        ref="markerRef"
+        :class="ns.e('marker')"
+        :style="markerStyle"
+      />
+      <div :class="ns.e('list')">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
@@ -24,7 +44,10 @@ import {
 } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { useNamespace } from '@element-plus/hooks'
+import ElIcon from '@element-plus/components/icon'
+import { ArrowDown } from '@element-plus/icons-vue'
 import {
+  addUnit,
   animateScrollTo,
   getElement,
   getOffsetTopDistance,
@@ -53,6 +76,11 @@ const props = withDefaults(defineProps<AnchorProps>(), {
   marker: true,
   type: 'default',
   direction: 'vertical',
+  variant: 'flat',
+  size: 'default',
+  // keep tri-state: absent must stay undefined, not Boolean-cast to false
+  collapsible: undefined,
+  showTooltip: true,
 })
 const emit = defineEmits(anchorEmits)
 const slots = useSlots()
@@ -60,8 +88,10 @@ const slots = useSlots()
 const currentAnchor = ref('')
 const markerStyle = ref<CSSProperties>({})
 const anchorRef = ref<HTMLElement | null>(null)
+const bodyRef = ref<HTMLElement | null>(null)
 const markerRef = ref<HTMLElement | null>(null)
 const containerEl = ref<HTMLElement | Window>()
+const collapsed = ref(props.defaultCollapsed ?? false)
 
 const links: Record<string, HTMLElement> = {}
 let isScrolling = false
@@ -73,7 +103,29 @@ const cls = computed(() => [
   ns.b(),
   props.type === 'underline' ? ns.m('underline') : '',
   ns.m(props.direction),
+  props.variant === 'card' ? ns.m('card') : '',
+  props.size === 'small' ? ns.m('small') : '',
+  ns.is('collapsed', collapsed.value),
 ])
+
+const hasTitle = computed(() => !!slots.title || !!props.title)
+// flat variant always shows the collapse button per design spec
+const collapsibleEnabled = computed(
+  () => props.collapsible ?? props.variant === 'flat'
+)
+const hasHeader = computed(() => hasTitle.value || collapsibleEnabled.value)
+
+const bodyStyle = computed<CSSProperties>(() => {
+  if (isUndefined(props.maxHeight)) return {}
+  return {
+    maxHeight: addUnit(props.maxHeight),
+    overflowY: 'auto',
+  }
+})
+
+const toggleCollapse = () => {
+  collapsed.value = !collapsed.value
+}
 
 const addLink = (state: AnchorLinkState) => {
   links[state.href] = state.el
@@ -188,7 +240,7 @@ useEventListener(containerEl, 'scroll', handleScroll)
 
 const updateMarkerStyle = () => {
   nextTick(() => {
-    if (!anchorRef.value || !markerRef.value || !currentAnchor.value) {
+    if (!bodyRef.value || !markerRef.value || !currentAnchor.value) {
       markerStyle.value = {}
       return
     }
@@ -197,12 +249,12 @@ const updateMarkerStyle = () => {
       markerStyle.value = {}
       return
     }
-    const anchorRect = anchorRef.value.getBoundingClientRect()
+    const bodyRect = bodyRef.value.getBoundingClientRect()
     const markerRect = markerRef.value.getBoundingClientRect()
     const linkRect = currentLinkEl.getBoundingClientRect()
 
     if (props.direction === 'horizontal') {
-      const left = linkRect.left - anchorRect.left
+      const left = linkRect.left - bodyRect.left + bodyRef.value.scrollLeft
       markerStyle.value = {
         left: `${left}px`,
         width: `${linkRect.width}px`,
@@ -211,14 +263,33 @@ const updateMarkerStyle = () => {
     } else {
       const top =
         linkRect.top -
-        anchorRect.top +
+        bodyRect.top +
+        bodyRef.value.scrollTop +
         (linkRect.height - markerRect.height) / 2
       markerStyle.value = {
         top: `${top}px`,
         opacity: 1,
       }
     }
+
+    scrollActiveIntoView()
   })
+}
+
+// keep the active link visible when the list scrolls internally
+const scrollActiveIntoView = () => {
+  const body = bodyRef.value
+  const currentLinkEl = links[currentAnchor.value]
+  if (!body || !currentLinkEl) return
+  if (body.scrollHeight <= body.clientHeight) return
+
+  const bodyRect = body.getBoundingClientRect()
+  const linkRect = currentLinkEl.getBoundingClientRect()
+  if (linkRect.top < bodyRect.top) {
+    body.scrollTop += linkRect.top - bodyRect.top
+  } else if (linkRect.bottom > bodyRect.bottom) {
+    body.scrollTop += linkRect.bottom - bodyRect.bottom
+  }
 }
 
 watch(currentAnchor, updateMarkerStyle)
@@ -246,6 +317,7 @@ provide(anchorKey, {
   ns,
   direction: props.direction,
   currentAnchor,
+  showTooltip: props.showTooltip,
   addLink,
   removeLink,
   handleClick,

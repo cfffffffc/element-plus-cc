@@ -8,12 +8,21 @@
   @include e(item) {
     display: flex;
     flex-direction: column;
+    gap: getCssVar('anchor-item-gap');
+  }
+
+  @include e(link-row) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   @include e(link) {
+    position: relative;
+    flex: 1;
+    min-width: 0;
     font-size: getCssVar('anchor-font-size');
     line-height: getCssVar('anchor-line-height');
-    padding: 4px 0;
     color: getCssVar('anchor-color');
     transition: color getCssVar('transition-duration');
     white-space: nowrap;
@@ -36,6 +45,25 @@
 
     @include when(active) {
       color: getCssVar('anchor-active-color');
+    }
+  }
+
+  @include e(expand-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    color: getCssVar('anchor-collapse-icon-color');
+    transform: rotate(180deg);
+    transition: transform getCssVar('transition-duration');
+
+    @include when(collapsed) {
+      transform: rotate(0deg);
     }
   }
 
