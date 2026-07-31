@@ -11,6 +11,7 @@ declare module 'vue' {
     ElAvatarGroup: typeof import('element-plus')['ElAvatarGroup']
     ElAnchor: typeof import('element-plus')['ElAnchor']
     ElAnchorLink: typeof import('element-plus')['ElAnchorLink']
+    ElAnchorButton: typeof import('element-plus')['ElAnchorButton']
     ElBacktop: typeof import('element-plus')['ElBacktop']
     ElBadge: typeof import('element-plus')['ElBadge']
     ElBreadcrumb: typeof import('element-plus')['ElBreadcrumb']

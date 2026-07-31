@@ -15,7 +15,8 @@
       "PowerShell($conn = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($conn\\) { $conn | Select-Object -First 1 OwningProcess | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -Confirm:$false; \"killed PID $\\($_.OwningProcess\\)\" } } else { \"port 3000 free\" })",
       "Bash(sed -i 's|http://localhost:3000/|http://localhost:3001/|' check-play.mjs)",
       "Bash(base64 -w0 btn.png)",
-      "Bash(base64 -w0 btn2.png)"
+      "Bash(base64 -w0 btn2.png)",
+      "Bash(curl -s \"http://localhost:5199/@fs/f:/workspace/element-plus-cc/packages/theme-chalk/src/anchor.scss\")"
     ]
   }
 }

@@ -38,12 +38,12 @@
     padding: 0;
     border: none;
     cursor: pointer;
-    // expanded: chevron-up (btn2.png); collapsed: list icon (btn.png)
-    background: transparent url(#{anchor-icons.$anchor-btn-expanded}) center /
+    // default: UI/1.jpg; hover: UI/2.jpg
+    background: transparent url(#{anchor-icons.$anchor-btn-default}) center /
       contain no-repeat;
 
-    @include when(collapsed) {
-      background-image: url(#{anchor-icons.$anchor-btn-collapsed});
+    &:hover {
+      background-image: url(#{anchor-icons.$anchor-btn-hover});
     }
   }
 
@@ -110,11 +110,16 @@
       padding-left: getCssVar('anchor-padding-indent');
     }
 
-    // nested sub-link lists: indented, with their own left border so the
-    // trunk line stays continuous through the collapsed/expanded children
+    // nested sub-link lists share the parent's single vertical line: the
+    // list itself has no border or indent, only the row text is indented
+    // further, so every level's border-left sits on the same x and the
+    // active segment only colors next to the active row
     .#{$namespace}-anchor__item .#{$namespace}-anchor__list {
-      padding-left: getCssVar('anchor-sub-indent');
-      border-left: 1px solid getCssVar('anchor-link-border-color');
+      .#{$namespace}-anchor__link-row {
+        padding-left: calc(
+          #{getCssVar('anchor-item-gap')} + #{getCssVar('anchor-sub-indent')}
+        );
+      }
     }
 
     &.#{$namespace}-anchor--underline {
@@ -165,6 +170,28 @@
         height: 2px;
         border-radius: unset;
       }
+    }
+  }
+}
+
+@include b(anchor-button) {
+  padding: 0;
+  font-size: getCssVar('font-size', 'base');
+  line-height: 1.5;
+  color: getCssVar('text-color', 'primary');
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: getCssVar('color-primary');
+  }
+
+  // not positioned at the first link
+  @include when(active) {
+    &,
+    &:hover {
+      color: #ff9900;
     }
   }
 }

@@ -107,10 +107,8 @@ const cls = computed(() => [
 ])
 
 const hasTitle = computed(() => !!slots.title || !!props.title)
-// flat variant always shows the collapse button per design spec
-const collapsibleEnabled = computed(
-  () => props.collapsible ?? props.variant === 'flat'
-)
+// collapse button shows by default for both flat and card variants
+const collapsibleEnabled = computed(() => props.collapsible ?? true)
 const hasHeader = computed(() => hasTitle.value || collapsibleEnabled.value)
 
 const bodyStyle = computed<CSSProperties>(() => {

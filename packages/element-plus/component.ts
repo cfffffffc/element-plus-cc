@@ -107,7 +107,11 @@ import { ElTreeV2 } from '@element-plus/components/tree-v2'
 import { ElUpload } from '@element-plus/components/upload'
 import { ElWatermark } from '@element-plus/components/watermark'
 import { ElTour, ElTourStep } from '@element-plus/components/tour'
-import { ElAnchor, ElAnchorLink } from '@element-plus/components/anchor'
+import {
+  ElAnchor,
+  ElAnchorButton,
+  ElAnchorLink,
+} from '@element-plus/components/anchor'
 import { ElSegmented } from '@element-plus/components/segmented'
 import { ElMention } from '@element-plus/components/mention'
 import { ElSplitter, ElSplitterPanel } from '@element-plus/components/splitter'
@@ -222,6 +226,7 @@ export default [
   ElTourStep,
   ElAnchor,
   ElAnchorLink,
+  ElAnchorButton,
   ElSegmented,
   ElMention,
   ElSplitter,
