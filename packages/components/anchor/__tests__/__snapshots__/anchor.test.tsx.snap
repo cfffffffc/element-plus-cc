@@ -2,9 +2,11 @@
 
 exports[`Anchor.vue > snapshot 1`] = `
 "<div class="el-anchor el-anchor--vertical">
-  <!--v-if-->
+  <div class="el-anchor__header">
+    <!--v-if--><button type="button" class="el-anchor__collapse-btn"></button>
+  </div>
   <div class="el-anchor__body">
-    <div class="el-anchor__marker"></div>
+    <!--v-if-->
     <div class="el-anchor__list">
       <div class="el-anchor__item">
         <div class="el-anchor__link-row"><a class="el-anchor__link el-tooltip__trigger el-tooltip__trigger" href="#anchor-link-0">#anchor-link-0</a>
@@ -21,9 +23,11 @@ exports[`Anchor.vue > snapshot 1`] = `
 
 exports[`Anchor.vue > snapshot 2`] = `
 "<div class="el-anchor el-anchor--horizontal">
-  <!--v-if-->
+  <div class="el-anchor__header">
+    <!--v-if--><button type="button" class="el-anchor__collapse-btn"></button>
+  </div>
   <div class="el-anchor__body">
-    <div class="el-anchor__marker"></div>
+    <!--v-if-->
     <div class="el-anchor__list">
       <div class="el-anchor__item">
         <div class="el-anchor__link-row"><a class="el-anchor__link el-tooltip__trigger el-tooltip__trigger" href="#anchor-link-0">#anchor-link-0</a>
@@ -40,9 +44,11 @@ exports[`Anchor.vue > snapshot 2`] = `
 
 exports[`Anchor.vue > snapshot 3`] = `
 "<div class="el-anchor el-anchor--underline el-anchor--vertical">
-  <!--v-if-->
+  <div class="el-anchor__header">
+    <!--v-if--><button type="button" class="el-anchor__collapse-btn"></button>
+  </div>
   <div class="el-anchor__body">
-    <div class="el-anchor__marker"></div>
+    <!--v-if-->
     <div class="el-anchor__list">
       <div class="el-anchor__item">
         <div class="el-anchor__link-row"><a class="el-anchor__link el-tooltip__trigger el-tooltip__trigger" href="#anchor-link-0">#anchor-link-0</a>
@@ -59,9 +65,11 @@ exports[`Anchor.vue > snapshot 3`] = `
 
 exports[`Anchor.vue > snapshot 4`] = `
 "<div class="el-anchor el-anchor--underline el-anchor--horizontal">
-  <!--v-if-->
+  <div class="el-anchor__header">
+    <!--v-if--><button type="button" class="el-anchor__collapse-btn"></button>
+  </div>
   <div class="el-anchor__body">
-    <div class="el-anchor__marker"></div>
+    <!--v-if-->
     <div class="el-anchor__list">
       <div class="el-anchor__item">
         <div class="el-anchor__link-row"><a class="el-anchor__link el-tooltip__trigger el-tooltip__trigger" href="#anchor-link-0">#anchor-link-0</a>

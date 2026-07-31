@@ -110,7 +110,7 @@ export const anchorProps = buildProps({
    */
   marker: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   /**
    * @description Set Anchor type

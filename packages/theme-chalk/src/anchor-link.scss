@@ -8,13 +8,22 @@
   @include e(item) {
     display: flex;
     flex-direction: column;
-    gap: getCssVar('anchor-item-gap');
   }
 
   @include e(link-row) {
     display: flex;
     align-items: center;
     gap: 4px;
+    // vertical spacing lives on row padding (not list gap) so each row's
+    // border-left touches the next one, forming a continuous vertical line
+    padding: calc(#{getCssVar('anchor-item-gap')} / 2) 0
+      calc(#{getCssVar('anchor-item-gap')} / 2) getCssVar('anchor-item-gap');
+    border-left: 1px solid getCssVar('anchor-link-border-color');
+    transition: border-color getCssVar('transition-duration');
+
+    @include when(active) {
+      border-left-color: getCssVar('anchor-link-active-border-color');
+    }
   }
 
   @include e(link) {
@@ -69,5 +78,12 @@
 
   & .#{$namespace}-anchor__list .#{$namespace}-anchor__item a {
     display: inline-block;
+  }
+
+  &.#{$namespace}-anchor--horizontal {
+    @include e(link-row) {
+      padding: 0;
+      border-left: none;
+    }
   }
 }

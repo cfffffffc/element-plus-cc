@@ -1,6 +1,6 @@
 <template>
   <div :class="ns.e('item')">
-    <div :class="ns.e('link-row')">
+    <div :class="[ns.e('link-row'), ns.is('active', isActive)]">
       <el-tooltip
         :disabled="!showTooltip || !isOverflow"
         :content="tooltipContent"
@@ -68,10 +68,9 @@ const {
   handleClick: contextHandleClick,
 } = inject(anchorKey)!
 
-const cls = computed(() => [
-  ns.e('link'),
-  ns.is('active', currentAnchor.value === props.href),
-])
+const isActive = computed(() => currentAnchor.value === props.href)
+
+const cls = computed(() => [ns.e('link'), ns.is('active', isActive.value)])
 
 const showSubLink = computed(
   () => !!slots['sub-link'] && direction === 'vertical'

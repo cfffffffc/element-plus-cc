@@ -3,6 +3,7 @@
 @use 'mixins/mixins' as *;
 @use 'mixins/var' as *;
 @use 'common/var' as *;
+@use 'common/anchor-icons' as anchor-icons;
 
 @include b(anchor) {
   @include set-component-css-var('anchor', $anchor);
@@ -31,20 +32,18 @@
   }
 
   @include e(collapse-btn) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    width: 24px;
+    height: 24px;
     margin-left: auto;
     padding: 0;
     border: none;
-    background: transparent;
     cursor: pointer;
-    color: getCssVar('anchor-collapse-icon-color');
-    transform: rotate(180deg);
-    transition: transform getCssVar('transition-duration');
+    // expanded: chevron-up (btn2.png); collapsed: list icon (btn.png)
+    background: transparent url(#{anchor-icons.$anchor-btn-expanded}) center /
+      contain no-repeat;
 
     @include when(collapsed) {
-      transform: rotate(0deg);
+      background-image: url(#{anchor-icons.$anchor-btn-collapsed});
     }
   }
 
@@ -66,6 +65,7 @@
     }
 
     .#{$namespace}-anchor__collapse-btn {
+      order: -1;
       margin-left: 0;
     }
   }
@@ -107,8 +107,14 @@
     @include e(list) {
       display: flex;
       flex-direction: column;
-      gap: getCssVar('anchor-item-gap');
       padding-left: getCssVar('anchor-padding-indent');
+    }
+
+    // nested sub-link lists: indented, with their own left border so the
+    // trunk line stays continuous through the collapsed/expanded children
+    .#{$namespace}-anchor__item .#{$namespace}-anchor__list {
+      padding-left: getCssVar('anchor-sub-indent');
+      border-left: 1px solid getCssVar('anchor-link-border-color');
     }
 
     &.#{$namespace}-anchor--underline {

@@ -9,9 +9,7 @@
         type="button"
         :class="[ns.e('collapse-btn'), ns.is('collapsed', collapsed)]"
         @click="toggleCollapse"
-      >
-        <el-icon><arrow-down /></el-icon>
-      </button>
+      />
     </div>
     <div
       v-show="!collapsed"
@@ -44,8 +42,6 @@ import {
 } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { useNamespace } from '@element-plus/hooks'
-import ElIcon from '@element-plus/components/icon'
-import { ArrowDown } from '@element-plus/icons-vue'
 import {
   addUnit,
   animateScrollTo,
@@ -73,7 +69,7 @@ const props = withDefaults(defineProps<AnchorProps>(), {
   offset: 0,
   bound: 15,
   duration: 300,
-  marker: true,
+  marker: false,
   type: 'default',
   direction: 'vertical',
   variant: 'flat',
@@ -96,6 +92,8 @@ const collapsed = ref(props.defaultCollapsed ?? false)
 const links: Record<string, HTMLElement> = {}
 let isScrolling = false
 let currentScrollTop = 0
+let prevScrollTop = 0
+let scrollDirection: 'down' | 'up' = 'down'
 
 const ns = useNamespace('anchor')
 
@@ -179,6 +177,7 @@ const scrollToAnchor = (href: string) => {
 
 const scrollTo = (href?: string) => {
   if (href) {
+    scrollDirection = 'down'
     setCurrentAnchor(href)
     scrollToAnchor(href)
   }
@@ -192,6 +191,8 @@ const handleClick = (e: MouseEvent, href?: string) => {
 const handleScroll = throttleByRaf(() => {
   if (containerEl.value) {
     currentScrollTop = getScrollTop(containerEl.value)
+    scrollDirection = currentScrollTop >= prevScrollTop ? 'down' : 'up'
+    prevScrollTop = currentScrollTop
   }
   const currentHref = getCurrentHref()
   if (isScrolling || isUndefined(currentHref)) return
@@ -240,6 +241,7 @@ useEventListener(containerEl, 'scroll', handleScroll)
 
 const updateMarkerStyle = () => {
   nextTick(() => {
+    scrollActiveIntoView()
     if (!bodyRef.value || !markerRef.value || !currentAnchor.value) {
       markerStyle.value = {}
       return
@@ -271,24 +273,33 @@ const updateMarkerStyle = () => {
         opacity: 1,
       }
     }
-
-    scrollActiveIntoView()
   })
 }
 
-// keep the active link visible when the list scrolls internally
+// When the active link sits at the last visible row of the scrollable list
+// (or beyond) while scrolling down, move it to the top of the visible area
+// so the upcoming links stay visible. Mirror rule applies when scrolling up.
 const scrollActiveIntoView = () => {
   const body = bodyRef.value
   const currentLinkEl = links[currentAnchor.value]
   if (!body || !currentLinkEl) return
   if (body.scrollHeight <= body.clientHeight) return
+  // hidden by a collapsed parent (v-show keeps it registered)
+  if (!currentLinkEl.offsetParent) return
 
-  const bodyRect = body.getBoundingClientRect()
-  const linkRect = currentLinkEl.getBoundingClientRect()
-  if (linkRect.top < bodyRect.top) {
-    body.scrollTop += linkRect.top - bodyRect.top
-  } else if (linkRect.bottom > bodyRect.bottom) {
-    body.scrollTop += linkRect.bottom - bodyRect.bottom
+  const linkTop = currentLinkEl.offsetTop
+  const linkBottom = linkTop + currentLinkEl.offsetHeight
+  const viewTop = body.scrollTop
+  const viewBottom = viewTop + body.clientHeight
+
+  const alignToTop = () => {
+    body.scrollTop = Math.min(linkTop, body.scrollHeight - body.clientHeight)
+  }
+
+  if (scrollDirection === 'down' && linkBottom >= viewBottom) {
+    alignToTop()
+  } else if (scrollDirection === 'up' && linkTop <= viewTop) {
+    alignToTop()
   }
 }
 

@@ -893,7 +893,8 @@ $anchor: () !default;
 $anchor: map.merge(
   (
     'bg-color': getCssVar('bg-color'),
-    'padding-indent': 14px,
+    'padding-indent': 0,
+    'sub-indent': 14px,
     'font-size': 16px,
     'line-height': 24px,
     'font-size-small': 14px,
@@ -903,6 +904,8 @@ $anchor: map.merge(
     'active-color': #ff9900,
     'hover-color': #ff9900,
     'marker-bg-color': #ff9900,
+    'link-border-color': #dddddd,
+    'link-active-border-color': #ff9900,
     'title-color': #333333,
     'title-font-size': 16px,
     'title-font-weight': 600,
