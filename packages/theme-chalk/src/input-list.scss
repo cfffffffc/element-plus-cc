@@ -1,0 +1,50 @@
+@use 'mixins/mixins' as *;
+@use 'common/var' as *;
+
+@include b(input-list) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  @include e(row) {
+    margin-bottom: 0;
+  }
+
+  @include e(row-content) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @include e(delete) {
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    padding: 4px 6px;
+    font-size: getCssVar('font-size', 'base');
+    color: getCssVar('text-color-secondary');
+    cursor: pointer;
+
+    &:hover {
+      color: getCssVar('color-danger');
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  @include e(add) {
+    align-self: flex-start;
+    border: none;
+    background: none;
+    padding: 4px 6px;
+    font-size: getCssVar('font-size', 'base');
+    color: #ff9900;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
