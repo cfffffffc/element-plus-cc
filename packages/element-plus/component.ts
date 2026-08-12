@@ -56,6 +56,15 @@ import { ElInput } from '@element-plus/components/input'
 import { ElInputNumber } from '@element-plus/components/input-number'
 import { ElInputTag } from '@element-plus/components/input-tag'
 import { ElInputOtp } from '@element-plus/components/input-otp'
+import { ElInputList } from '@element-plus/components/input-list'
+import {
+  ElAmountInput,
+  ElBankAccountInput,
+  ElFormatInput,
+  ElIdCardInput,
+  ElPhoneInput,
+} from '@element-plus/components/format-input'
+import { ElDurationInput } from '@element-plus/components/duration-input'
 import { ElLink } from '@element-plus/components/link'
 import {
   ElMenu,
@@ -173,6 +182,13 @@ export default [
   ElInputNumber,
   ElInputTag,
   ElInputOtp,
+  ElInputList,
+  ElFormatInput,
+  ElPhoneInput,
+  ElBankAccountInput,
+  ElIdCardInput,
+  ElAmountInput,
+  ElDurationInput,
   ElLink,
   ElMenu,
   ElMenuItem,

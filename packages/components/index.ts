@@ -79,6 +79,9 @@ export * from './anchor'
 export * from './segmented'
 export * from './mention'
 export * from './splitter'
+export * from './input-list'
+export * from './format-input'
+export * from './duration-input'
 
 // plugins
 export * from './infinite-scroll'
