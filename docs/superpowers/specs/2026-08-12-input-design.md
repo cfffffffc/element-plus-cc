@@ -42,14 +42,14 @@ L3 示例与文档   play 验收页覆盖 12 节
 
 ### 3.1 现有组件改造映射（L1）
 
-| 现有组件                   | 覆盖章节    | 改造方式                                                       |
-| -------------------------- | ----------- | -------------------------------------------------------------- |
-| `ElInput`                  | r1 r3 r5 r7 | 纯 SCSS：focus 边框染橙；其余状态（hover/禁用/异常）沿用默认   |
-| `ElTextarea`（Input 内部） | r4          | SCSS：40px 最小高、112px 最大高出滚动条、字数、resize、禁用    |
-| `ElInputGroup`             | r5 r6 r8    | SCSS：前后缀放选择器、范围输入框组合、前后缀并存               |
-| `ElFormItem`               | r2          | SCSS：标签右对齐/换行/间距、必填星号、提示图标                 |
-| `ElAutocomplete`           | r9          | SCSS：下拉面板 restyle；关键词高亮经其自定义 slot 在用法层实现 |
-| `ElSelect`                 | r6          | SCSS：前后缀内嵌时样式融入                                     |
+| 现有组件                   | 覆盖章节    | 改造方式                                                                                                             |
+| -------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `ElInput`                  | r1 r3 r5 r7 | 纯 SCSS：focus 边框染橙；其余状态（hover/禁用/异常）沿用默认                                                         |
+| `ElTextarea`（Input 内部） | r4          | SCSS：固定高度态默认 `resize: both`（右下角调宽高、无上限）；自适应态 40px 最小高 / 112px 最大高出滚动条；字数、禁用 |
+| `ElInputGroup`             | r5 r6 r8    | SCSS：前后缀放选择器、范围输入框组合、前后缀并存                                                                     |
+| `ElFormItem`               | r2          | SCSS：标签右对齐/换行/间距、必填星号、提示图标                                                                       |
+| `ElAutocomplete`           | r9          | SCSS：下拉面板 restyle；关键词高亮经其自定义 slot 在用法层实现                                                       |
+| `ElSelect`                 | r6          | SCSS：前后缀内嵌时样式融入                                                                                           |
 
 ### 3.2 新增组件（L2）
 
@@ -79,13 +79,13 @@ L3 示例与文档   play 验收页覆盖 12 节
 
 ### 4.2 样式改造点
 
-| 文件                                        | 改造内容                                                        |
-| ------------------------------------------- | --------------------------------------------------------------- |
-| `theme-chalk/src/common/var.scss`           | `$input.focus-border-color = #ff9900`；如需新增组件变量在此追加 |
-| `theme-chalk/src/input.scss`                | 极少量：确认 `__wrapper` focus 橙色生效；异常态保持 danger      |
-| `theme-chalk/src/input-list.scss`（新）     | 行布局、新增/删除按钮样式                                       |
-| `theme-chalk/src/duration-input.scss`（新） | 三段布局、单位标签、异常提示                                    |
-| `theme-chalk/src/format-input.scss`（新）   | 极薄，主要复用 input 样式                                       |
+| 文件                                        | 改造内容                                                                                                                                                                                                          |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `theme-chalk/src/common/var.scss`           | `$input.focus-border-color = #ff9900`；如需新增组件变量在此追加                                                                                                                                                   |
+| `theme-chalk/src/input.scss`                | 极少量：确认 `__wrapper` focus 橙色生效；异常态保持 danger；**textarea 固定高度态默认 `resize: both` 且不设 max-height**（当前默认 `resize: vertical`）；自适应态 max-height `112px`（超出出滚动条，最小高 40px） |
+| `theme-chalk/src/input-list.scss`（新）     | 行布局、新增/删除按钮样式                                                                                                                                                                                         |
+| `theme-chalk/src/duration-input.scss`（新） | 三段布局、单位标签、异常提示                                                                                                                                                                                      |
+| `theme-chalk/src/format-input.scss`（新）   | 极薄，主要复用 input 样式                                                                                                                                                                                         |
 
 > theme-chalk 构建自动 glob `src/*.scss`，新增 scss 无需手挂入口（anchor 已如此）。
 
@@ -95,19 +95,23 @@ L3 示例与文档   play 验收页覆盖 12 节
 
 **Props**
 
-| Props         | 类型            | 默认           | 说明                            |
-| ------------- | --------------- | -------------- | ------------------------------- |
-| `modelValue`  | `string[]`      | `[]`           | 各行的值（v-model）             |
-| `placeholder` | `string`        | —              | 透传给每行输入框                |
-| `min`         | `number`        | `1`            | 最少行数（≤此值不显示删除按钮） |
-| `max`         | `number`        | `Infinity`     | 最多行数（达到后隐藏新增按钮）  |
-| `addText`     | `string`        | `'+ 点击新增'` | 新增按钮文案                    |
-| `size`        | `ComponentSize` | —              | 透传行内 ElInput                |
-| `disabled`    | `boolean`       | `false`        | 透传行内 ElInput                |
+| Props         | 类型                      | 默认           | 说明                                                                |
+| ------------- | ------------------------- | -------------- | ------------------------------------------------------------------- |
+| `modelValue`  | `string[]`                | `[]`           | 各行的值（v-model）                                                 |
+| `placeholder` | `string`                  | —              | 透传给每行输入框                                                    |
+| `min`         | `number`                  | `1`            | 最少行数（≤此值不显示删除按钮）                                     |
+| `max`         | `number`                  | `Infinity`     | 最多行数（达到后隐藏新增按钮）                                      |
+| `addText`     | `string`                  | `'+ 点击新增'` | 新增按钮文案                                                        |
+| `size`        | `ComponentSize`           | —              | 透传行内 ElInput                                                    |
+| `disabled`    | `boolean`                 | `false`        | 透传行内 ElInput                                                    |
+| `rules`       | `Arrayable<FormItemRule>` | —              | **整组输入框共用**的校验规则，逐行生效（表单集成，见下）            |
+| `prop`        | `string`                  | 自动生成       | 数组在 form model 中的路径（如 `"contacts"`），用于行级 `prop` 定位 |
 
 **行为**：渲染 `modelValue.length` 行 ElInput，行尾删除按钮（≤min 不显示）；`addText` 按钮追加空行（达 max 隐藏）；删除任意行，始终保留 ≥ min 行。Emits：`update:modelValue`、`change`。
 
-**实现要点**：props.modelValue → 响应式副本驱动；增删改统一 `emit('update:modelValue', next)`；`v-for` + 稳定 key；提供默认 slot 渲染行内输入框（默认 ElInput，可自定义前后缀）。样式一/样式二：设计图仅区分"仅新增按钮"与"含删除按钮"两种初态，由行数/`min` 驱动，不额外设 prop。
+**表单集成（未来用在表单时）**：一组输入框共用同一组校验规则 —— 每行输入框包在内部 `ElFormItem` 中并共享 `rules`，行 `prop` = `${prop}[${index}]`；配合外层 `ElForm` 的 `model`/`validate()`，整组按同一规则校验，任一行为空/非法即标记该行错误并阻止提交。`prop` 缺省时生成唯一内部 key（行内规则仍可触发表单校验提示，但无法对应用户 form model 中的数组路径）。校验所需类型（`FormItemRule`/`Arrayable`）复用 `@element-plus/tokens`/`utils` 现有导出。
+
+**实现要点**：props.modelValue → 响应式副本驱动；增删改统一 `emit('update:modelValue', next)`；`v-for` + 稳定 key；提供默认 slot 渲染行内输入框（默认 ElInput，可自定义前后缀）；行内 ElFormItem 的 prop 路径随增删自动重排。样式一/样式二：设计图仅区分"仅新增按钮"与"含删除按钮"两种初态，由行数/`min` 驱动，不额外设 prop。
 
 ### 5.2 `ElFormatInput`（r11/r12 业务格式化输入）
 
@@ -218,3 +222,5 @@ packages/components/duration-input/
 9. 清除按钮 hover：保持默认灰。
 10. `ElFormatInput` 便捷别名（`ElPhoneInput` 等）：要。
 11. `ElDurationInput` v-model：`{h,m,s}` 对象。
+12. `ElInputList` 表单集成：整组输入框共用同一组校验规则（`rules` prop + 行级 `ElFormItem`，行 prop = `${prop}[${index}]`）。
+13. 文本域固定高度态：默认 `resize: both`（右下角拖拽调**宽+高**），**无上限**；112px 最大高出滚动条仅属自适应态。
