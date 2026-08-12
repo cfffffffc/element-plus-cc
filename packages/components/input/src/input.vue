@@ -128,6 +128,7 @@
           nsTextarea.e('inner'),
           nsInput.is('focus', isFocused),
           nsTextarea.is('clearable', clearable),
+          nsTextarea.is('autosize', !!props.autosize),
         ]"
         v-bind="attrs"
         :name="name"

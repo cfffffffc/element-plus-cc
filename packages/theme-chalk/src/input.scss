@@ -53,7 +53,7 @@
     cursor: auto;
     position: relative;
     display: block;
-    resize: vertical;
+    resize: both;
     padding: 5px map.get($input-padding-horizontal, 'default')-$border-width;
     line-height: 1.5;
     box-sizing: border-box;
@@ -86,6 +86,12 @@
     @include when(clearable) {
       padding: 5px map.get($input-padding-horizontal, 'default') + 14px 5px
         map.get($input-padding-horizontal, 'default')-$border-width;
+    }
+
+    @include when(autosize) {
+      resize: none;
+      max-height: 112px;
+      overflow-y: auto;
     }
 
     &::placeholder {
