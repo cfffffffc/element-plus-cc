@@ -3,6 +3,7 @@
 @use 'mixins/mixins' as *;
 @use 'mixins/var' as *;
 @use 'common/var' as *;
+@use 'common/anchor-icons' as anchor-icons;
 
 @include b(anchor) {
   @include set-component-css-var('anchor', $anchor);
@@ -10,12 +11,86 @@
   position: relative;
   background-color: getCssVar('anchor-bg-color');
 
+  @include e(header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: getCssVar('anchor-item-gap');
+  }
+
+  @include e(title) {
+    flex: 1;
+    min-width: 0;
+    font-size: getCssVar('anchor-title-font-size');
+    font-weight: getCssVar('anchor-title-font-weight');
+    line-height: getCssVar('anchor-line-height');
+    color: getCssVar('anchor-title-color');
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @include e(collapse-btn) {
+    width: 24px;
+    height: 24px;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    // default: UI/1.jpg; hover: UI/2.jpg
+    background: transparent url(#{anchor-icons.$anchor-btn-default}) center /
+      contain no-repeat;
+
+    &:hover {
+      background-image: url(#{anchor-icons.$anchor-btn-hover});
+    }
+  }
+
+  // collapsed flat variant: narrow vertical strip, button on top,
+  // title written vertically below it
+  @include when(collapsed) {
+    width: fit-content;
+
+    .#{$namespace}-anchor__header {
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 0;
+    }
+
+    .#{$namespace}-anchor__title {
+      flex: none;
+      writing-mode: vertical-rl;
+      max-height: 160px;
+    }
+
+    .#{$namespace}-anchor__collapse-btn {
+      order: -1;
+      margin-left: 0;
+    }
+  }
+
+  @include e(body) {
+    position: relative;
+  }
+
   @include e(marker) {
     position: absolute;
     background-color: getCssVar('anchor-marker-bg-color');
     border-radius: 4px;
     opacity: 0;
     z-index: 0;
+  }
+
+  @include m(card) {
+    padding: getCssVar('anchor-card-padding');
+    border: 1px solid getCssVar('anchor-card-border-color');
+    border-radius: getCssVar('anchor-card-border-radius');
+    background-color: getCssVar('anchor-card-bg-color');
+  }
+
+  @include m(small) {
+    @include set-component-css-var('anchor', $anchor-small);
   }
 
   &.#{$namespace}-anchor--vertical {
@@ -30,7 +105,21 @@
     }
 
     @include e(list) {
+      display: flex;
+      flex-direction: column;
       padding-left: getCssVar('anchor-padding-indent');
+    }
+
+    // nested sub-link lists share the parent's single vertical line: the
+    // list itself has no border or indent, only the row text is indented
+    // further, so every level's border-left sits on the same x and the
+    // active segment only colors next to the active row
+    .#{$namespace}-anchor__item .#{$namespace}-anchor__list {
+      .#{$namespace}-anchor__link-row {
+        padding-left: calc(
+          #{getCssVar('anchor-item-gap')} + #{getCssVar('anchor-sub-indent')}
+        );
+      }
     }
 
     &.#{$namespace}-anchor--underline {
@@ -63,15 +152,8 @@
 
     @include e(list) {
       display: flex;
+      gap: getCssVar('anchor-item-gap');
       padding-bottom: 4px;
-
-      @include e(item) {
-        padding-left: 16px;
-
-        &:first-child {
-          padding-left: 0;
-        }
-      }
     }
 
     &.#{$namespace}-anchor--underline {
@@ -88,6 +170,28 @@
         height: 2px;
         border-radius: unset;
       }
+    }
+  }
+}
+
+@include b(anchor-button) {
+  padding: 0;
+  font-size: getCssVar('font-size', 'base');
+  line-height: 1.5;
+  color: getCssVar('text-color', 'primary');
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: getCssVar('color-primary');
+  }
+
+  // not positioned at the first link
+  @include when(active) {
+    &,
+    &:hover {
+      color: #ff9900;
     }
   }
 }

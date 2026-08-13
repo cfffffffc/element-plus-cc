@@ -60,6 +60,46 @@ describe('Input.vue', () => {
     expect(inputElm.element.className.includes('is-focus')).toBe(false)
   })
 
+  test('textarea 渲染 autosize 标记 class', async () => {
+    const wrapper = mount(() => (
+      <Input type="textarea" autosize={{ minRows: 2 }} modelValue="text" />
+    ))
+
+    const textarea = wrapper.find('textarea')
+    expect(textarea.classes()).toContain('is-autosize')
+  })
+
+  test('textarea 非 autosize 不渲染标记 class', () => {
+    const wrapper = mount(() => <Input type="textarea" modelValue="text" />)
+
+    const textarea = wrapper.find('textarea')
+    expect(textarea.classes()).not.toContain('is-autosize')
+  })
+
+  test('textarea autosize 无 maxRows 时渲染 autosize-limit 上限 class', () => {
+    const wrapper = mount(() => (
+      <Input type="textarea" autosize={{ minRows: 2 }} modelValue="text" />
+    ))
+
+    const textarea = wrapper.find('textarea')
+    expect(textarea.classes()).toContain('is-autosize')
+    expect(textarea.classes()).toContain('is-autosize-limit')
+  })
+
+  test('textarea autosize 带 maxRows 时不渲染 autosize-limit，让 JS 高度生效', () => {
+    const wrapper = mount(() => (
+      <Input
+        type="textarea"
+        autosize={{ minRows: 2, maxRows: 10 }}
+        modelValue="text"
+      />
+    ))
+
+    const textarea = wrapper.find('textarea')
+    expect(textarea.classes()).toContain('is-autosize')
+    expect(textarea.classes()).not.toContain('is-autosize-limit')
+  })
+
   describe('test emoji', () => {
     test('el-input should minimize value between emoji length and maxLength', async () => {
       const inputVal = ref('12🌚')

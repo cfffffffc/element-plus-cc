@@ -41,6 +41,34 @@ export interface AnchorProps {
    * @description Scroll whether link is selected at the top
    */
   selectScrollTop?: boolean
+  /**
+   * @description The title of the anchor
+   */
+  title?: string
+  /**
+   * @description Set Anchor variant
+   */
+  variant?: 'flat' | 'card'
+  /**
+   * @description Set Anchor size
+   */
+  size?: 'default' | 'small'
+  /**
+   * @description Whether the anchor can be collapsed
+   */
+  collapsible?: boolean
+  /**
+   * @description Whether the anchor is collapsed by default
+   */
+  defaultCollapsed?: boolean
+  /**
+   * @description The max height of the anchor list, the list scrolls internally when exceeded
+   */
+  maxHeight?: number | string
+  /**
+   * @description Whether to show a tooltip when the link title overflows
+   */
+  showTooltip?: boolean
 }
 
 /**
@@ -82,7 +110,7 @@ export const anchorProps = buildProps({
    */
   marker: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   /**
    * @description Set Anchor type
@@ -102,6 +130,45 @@ export const anchorProps = buildProps({
    * @description Scroll whether link is selected at the top
    */
   selectScrollTop: Boolean,
+  /**
+   * @description The title of the anchor
+   */
+  title: String,
+  /**
+   * @description Set Anchor variant
+   */
+  variant: {
+    type: definePropType<'flat' | 'card'>(String),
+    default: 'flat',
+  },
+  /**
+   * @description Set Anchor size
+   */
+  size: {
+    type: definePropType<'default' | 'small'>(String),
+    default: 'default',
+  },
+  /**
+   * @description Whether the anchor can be collapsed
+   */
+  collapsible: Boolean,
+  /**
+   * @description Whether the anchor is collapsed by default
+   */
+  defaultCollapsed: Boolean,
+  /**
+   * @description The max height of the anchor list, the list scrolls internally when exceeded
+   */
+  maxHeight: {
+    type: definePropType<number | string>([Number, String]),
+  },
+  /**
+   * @description Whether to show a tooltip when the link title overflows
+   */
+  showTooltip: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 /**

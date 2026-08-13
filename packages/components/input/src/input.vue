@@ -128,6 +128,8 @@
           nsTextarea.e('inner'),
           nsInput.is('focus', isFocused),
           nsTextarea.is('clearable', clearable),
+          nsTextarea.is('autosize', !!props.autosize),
+          nsTextarea.is('autosize-limit', autosizeLimit),
         ]"
         v-bind="attrs"
         :name="name"
@@ -316,6 +318,12 @@ const textareaStyle = computed<StyleValue>(() => [
   { resize: props.resize },
   textareaHeight.value ? { height: textareaHeight.value } : undefined,
 ])
+// 仅无 maxRows 的自适应态才施加 112px 上限，避免覆盖按 maxRows 计算的 JS 高度
+const autosizeLimit = computed(
+  () =>
+    props.autosize === true ||
+    (isObject(props.autosize) && props.autosize.maxRows == null)
+)
 const nativeInputValue = computed(() =>
   isNil(props.modelValue) ? '' : String(props.modelValue)
 )
@@ -370,9 +378,12 @@ let rAFId: number | undefined
 
 useResizeObserver(textarea, (entries) => {
   onceInitSizeTextarea()
+  // SCSS 默认 resize: both；未显式传 resize 时按 both 处理，否则横向拖拽后
+  // 字数统计/清除图标位置不会重算而错位
+  const effectiveResize = props.resize ?? 'both'
   if (
     (!isWordLimitVisible.value && !renderClear.value) ||
-    (props.resize !== 'both' && props.resize !== 'horizontal')
+    (effectiveResize !== 'both' && effectiveResize !== 'horizontal')
   )
     return
   const entry = entries[0]

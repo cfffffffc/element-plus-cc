@@ -591,7 +591,7 @@ $input: map.merge(
     'placeholder-color': getCssVar('text-color-placeholder'),
     'hover-border-color': getCssVar('border-color-hover'),
     'clear-hover-color': getCssVar('text-color-secondary'),
-    'focus-border-color': getCssVar('color-primary'),
+    'focus-border-color': #ff9900,
     'width': 100%,
   ),
   $input
@@ -893,15 +893,39 @@ $anchor: () !default;
 $anchor: map.merge(
   (
     'bg-color': getCssVar('bg-color'),
-    'padding-indent': 14px,
-    'line-height': 22px,
-    'font-size': 12px,
-    'color': getCssVar('text-color-secondary'),
-    'active-color': getCssVar('color-primary'),
-    'hover-color': getCssVar('text-color-regular'),
-    'marker-bg-color': getCssVar('color-primary'),
+    'padding-indent': 0,
+    'sub-indent': 14px,
+    'font-size': 16px,
+    'line-height': 24px,
+    'font-size-small': 14px,
+    'line-height-small': 22px,
+    'item-gap': 12px,
+    'color': #333333,
+    'active-color': #ff9900,
+    'hover-color': #ff9900,
+    'marker-bg-color': #ff9900,
+    'link-border-color': #dddddd,
+    'link-active-border-color': #ff9900,
+    'title-color': #333333,
+    'title-font-size': 16px,
+    'title-font-weight': 600,
+    'card-border-color': getCssVar('border-color'),
+    'card-border-radius': 8px,
+    'card-padding': 12px,
+    'card-bg-color': getCssVar('bg-color'),
+    'collapse-icon-color': getCssVar('text-color-secondary'),
   ),
   $anchor
+);
+
+$anchor-small: () !default;
+$anchor-small: map.merge(
+  (
+    'font-size': 14px,
+    'line-height': 22px,
+    'title-font-size': 14px,
+  ),
+  $anchor-small
 );
 
 // Segmented

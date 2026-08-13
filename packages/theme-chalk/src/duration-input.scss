@@ -1,0 +1,88 @@
+@use 'sass:map';
+
+@use 'mixins/mixins' as *;
+@use 'common/var' as *;
+
+@include b(duration-input) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  @include e(item) {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid getCssVar('border-color');
+    border-radius: 4px;
+    background-color: getCssVar('fill-color', 'blank');
+    cursor: text;
+    overflow: hidden;
+    transition: getCssVar('transition-box-shadow');
+
+    &:hover {
+      border-color: getCssVar('border-color-hover');
+    }
+
+    @include when(active) {
+      border-color: #ff9900;
+    }
+  }
+
+  @include e(input) {
+    width: 3em;
+    height: 30px;
+    padding: 0 8px;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: getCssVar('font-size', 'base');
+    color: getCssVar('text-color-regular');
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: getCssVar('text-color-placeholder');
+    }
+  }
+
+  @include e(unit) {
+    padding-right: 8px;
+    color: getCssVar('text-color-secondary');
+    font-size: getCssVar('font-size', 'base');
+    user-select: none;
+  }
+
+  @include e(error) {
+    color: getCssVar('color-danger');
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  @include when(error) {
+    .#{$namespace}-duration-input__item {
+      border-color: getCssVar('color-danger');
+    }
+  }
+
+  @include when(disabled) {
+    .#{$namespace}-duration-input__item {
+      background-color: getCssVar('disabled-bg-color');
+      cursor: not-allowed;
+
+      .#{$namespace}-duration-input__input {
+        color: getCssVar('disabled-text-color');
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  @include when(large) {
+    .#{$namespace}-duration-input__input {
+      height: 38px;
+    }
+  }
+
+  @include when(small) {
+    .#{$namespace}-duration-input__input {
+      height: 22px;
+    }
+  }
+}
