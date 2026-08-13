@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="rootRef"
     :class="[
       ns.b(),
       ns.m(size),
@@ -61,6 +62,7 @@ const segments = [
 
 type SegKey = (typeof segments)[number]['key']
 
+const rootRef = ref<HTMLElement>()
 const activeSeg = ref<SegKey>()
 const errorMessage = ref('')
 const segInputs = ref<Record<string, HTMLInputElement | null>>({})
@@ -91,12 +93,16 @@ const handleFocus = (key: SegKey) => {
 }
 
 const handleInput = (key: SegKey, evt: Event) => {
+  if (errorMessage.value) errorMessage.value = ''
   const raw = (evt.target as HTMLInputElement).value.replace(/\D/g, '')
   const num = raw === '' ? null : Number(raw)
   emit('update:modelValue', { ...current.value, [key]: num })
 }
 
-const handleBlur = () => {
+const handleBlur = (evt: FocusEvent) => {
+  // 焦点在同一组件内的段之间移动时不触发整组钳制/补零，避免打断跨段编辑
+  const related = evt.relatedTarget as HTMLElement | null
+  if (related && rootRef.value?.contains(related)) return
   let next = { ...current.value }
   let error = ''
   if (next.h != null && next.h > 99) {

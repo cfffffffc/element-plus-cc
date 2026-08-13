@@ -7,8 +7,17 @@ import AmountInput from './src/amount-input.vue'
 
 import type { SFCWithInstall } from '@element-plus/utils'
 
-export const ElFormatInput: SFCWithInstall<typeof FormatInput> =
-  withInstall(FormatInput)
+export const ElFormatInput: SFCWithInstall<typeof FormatInput> & {
+  PhoneInput: typeof PhoneInput
+  BankAccountInput: typeof BankAccountInput
+  IdCardInput: typeof IdCardInput
+  AmountInput: typeof AmountInput
+} = withInstall(FormatInput, {
+  PhoneInput,
+  BankAccountInput,
+  IdCardInput,
+  AmountInput,
+})
 export const ElPhoneInput: SFCWithInstall<typeof PhoneInput> =
   withNoopInstall(PhoneInput)
 export const ElBankAccountInput: SFCWithInstall<typeof BankAccountInput> =

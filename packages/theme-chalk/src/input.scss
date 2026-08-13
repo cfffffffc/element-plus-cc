@@ -90,6 +90,11 @@
 
     @include when(autosize) {
       resize: none;
+    }
+
+    // 仅无 maxRows 的自适应态（布尔 autosize 或仅 minRows）才设上限，
+    // 否则 CSS max-height 会压过 JS 按 maxRows 算出的高度
+    @include when(autosize-limit) {
       max-height: 112px;
       overflow-y: auto;
     }

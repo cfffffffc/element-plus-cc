@@ -47,6 +47,7 @@ export const inputFormatRules: Record<InputFormat, InputFormatRule> = {
         .replace(/\s/g, '')
         .toUpperCase()
         .replace(/[^0-9X]/g, '')
+        .slice(0, 18)
     },
     maxlength: 20,
   },
@@ -54,18 +55,22 @@ export const inputFormatRules: Record<InputFormat, InputFormatRule> = {
     formatter(value) {
       const raw = String(value).replace(/,/g, '')
       const [int = '', dec = ''] = raw.split('.')
-      const intPart = onlyDigits(int)
+      const intPart = onlyDigits(int).slice(0, 15)
       const intWithSep = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       const decPart = onlyDigits(dec).slice(0, 2)
-      return decPart ? `${intWithSep}.${decPart}` : intWithSep
+      if (decPart) return `${intWithSep}.${decPart}`
+      // 保留刚输入的尾点，否则 '12.' 会被立即吞掉，小数无法连续输入
+      return raw.includes('.') ? `${intWithSep}.` : intWithSep
     },
     parser(value) {
       const raw = String(value).replace(/,/g, '')
       const [int = '', dec = ''] = raw.split('.')
       const intPart = onlyDigits(int).slice(0, 15)
       const decPart = onlyDigits(dec).slice(0, 2)
-      return decPart ? `${intPart}.${decPart}` : intPart
+      if (decPart) return `${intPart}.${decPart}`
+      return raw.includes('.') ? `${intPart}.` : intPart
     },
-    maxlength: 20,
+    // 15 位整数千分位 19 字符 + '.00' = 22
+    maxlength: 22,
   },
 }

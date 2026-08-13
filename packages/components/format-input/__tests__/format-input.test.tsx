@@ -4,6 +4,7 @@ import { describe, expect, test } from 'vitest'
 import { inputFormatRules } from '../src/formats'
 import FormatInput from '../src/format-input.vue'
 import ElPhoneInput from '../src/phone-input.vue'
+import { ElFormatInput } from '../index'
 
 describe('format 规则', () => {
   test('phone: 3-4-4 空格分组，parser 还原纯数字', () => {
@@ -38,6 +39,27 @@ describe('format 规则', () => {
     const rule = inputFormatRules.phone
     expect(rule.formatter('13-5-5')).toBe('135 5')
     expect(rule.formatter('')).toBe('')
+  })
+
+  test('amount: 输入尾点保留，可连续输入小数', () => {
+    const rule = inputFormatRules.amount
+    expect(rule.formatter('12.')).toBe('12.')
+    expect(rule.parser('12.')).toBe('12.')
+    expect(rule.parser('12.5')).toBe('12.5')
+  })
+
+  test('amount: formatter/parser 整数对称截断且 maxlength 容纳格式化上限', () => {
+    const rule = inputFormatRules.amount
+    // 15 位整数千分位 19 字符 + '.00' = 22
+    expect(rule.formatter('123456789012345')).toBe('123,456,789,012,345')
+    expect(rule.formatter('1234567890123456')).toBe('123,456,789,012,345')
+    expect(rule.parser('9999999999999999.99')).toBe('999999999999999.99')
+    expect(rule.maxlength).toBe(22)
+  })
+
+  test('idCard: parser 与 formatter 同样截断到 18 位', () => {
+    const rule = inputFormatRules.idCard
+    expect(rule.parser('11010119900307451X99')).toBe('11010119900307451X')
   })
 })
 
@@ -75,5 +97,10 @@ describe('FormatInput.vue', () => {
   test('别名组件 phone 预置 format', () => {
     const wrapper = mount(() => <ElPhoneInput modelValue="13556997554" />)
     expect(wrapper.find('input').element.value).toBe('135 5699 7554')
+  })
+
+  test('别名组件经 ElFormatInput 静态属性挂载（withInstall extra）', () => {
+    expect(ElFormatInput.PhoneInput).toBe(ElPhoneInput)
+    expect(ElFormatInput.AmountInput).toBeTruthy()
   })
 })

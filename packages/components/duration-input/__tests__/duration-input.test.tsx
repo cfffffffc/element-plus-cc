@@ -88,4 +88,52 @@ describe('DurationInput.vue', () => {
 
     wrapper.unmount()
   })
+
+  test('焦点在段之间移动不触发整组钳制/补零/emit', async () => {
+    const value = ref<DurationValue | null>({ h: null, m: 75, s: null })
+    const wrapper = mount(
+      () => (
+        <DurationInput
+          modelValue={value.value}
+          onUpdate:modelValue={(v) => (value.value = v)}
+        />
+      ),
+      { attachTo: document.body }
+    )
+
+    const inputs = wrapper.findAll('.el-duration-input__input')
+    // h 段 blur 时焦点移向 m 段（relatedTarget 仍在组件内）
+    await inputs[0].trigger('blur', { relatedTarget: inputs[1].element })
+
+    // 不钳制 m=75、不补零、不 emit、不提示错误
+    expect(value.value).toEqual({ h: null, m: 75, s: null })
+    expect(wrapper.find('.el-duration-input__error').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  test('输入修正值后清除错误提示', async () => {
+    const value = ref<DurationValue | null>({ h: null, m: 75, s: 0 })
+    const wrapper = mount(
+      () => (
+        <DurationInput
+          modelValue={value.value}
+          onUpdate:modelValue={(v) => (value.value = v)}
+        />
+      ),
+      { attachTo: document.body }
+    )
+
+    const inputs = wrapper.findAll('.el-duration-input__input')
+    await inputs[1].trigger('blur')
+    expect(value.value).toEqual({ h: 0, m: 59, s: 0 })
+    expect(wrapper.find('.el-duration-input__error').exists()).toBe(true)
+
+    // 重新输入合法值，错误提示即时清除
+    await inputs[1].setValue('45')
+    expect(value.value).toEqual({ h: 0, m: 45, s: 0 })
+    expect(wrapper.find('.el-duration-input__error').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
 })
